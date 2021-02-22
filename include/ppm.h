@@ -1,5 +1,5 @@
-#ifndef SOBEL_PPM_H
-#define SOBEL_PPM_H
+#ifndef SOBEL_FILTER_PPM_H
+#define SOBEL_FILTER_PPM_H
 
 #include <stdint.h>
 #include <stddef.h>
@@ -30,7 +30,7 @@ typedef struct {
  *      ..............
  *
  * @path Path to PPM image
- * @return PPM image struct, may have NULL data on error
+ * @return PPM image struct
  */
 bool PPMRead(const char *path, PPMImage *image);
 
@@ -52,4 +52,14 @@ bool PPMWrite(PPMImage *image, const char *path);
  */
 void PPMFree(PPMImage *image);
 
-#endif //SOBEL_PPM_H
+/**
+ * Getting pixel struct from PPM image by indices
+ *
+ * @row First coordinate index
+ * @param Second coordinate index
+ *
+ * @return PPM pixel structure pointer
+ */
+PPMPixel* PPMGet(PPMImage *image, size_t row, size_t col);
+
+#endif //SOBEL_FILTER_PPM_H

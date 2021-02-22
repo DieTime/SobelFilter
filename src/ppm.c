@@ -74,9 +74,9 @@ bool PPMRead(const char *path, PPMImage *image) {
     size_t data_bytes = sizeof(PPMPixel) * image->width * image->height;
 
     // Read and save pixels
-    image->data = (PPMPixel *) malloc(data_bytes);
+    image->data = (PPMPixel*)malloc(data_bytes);
     if (read(fd, image->data, data_bytes) != data_bytes) {
-        fprintf(stderr, "[ERROR] Couldn't read PPM image pixels\n");
+        fprintf(stderr, "[ERROR] Couldn't allocate PPM image pixels\n");
         goto error;
     }
 
@@ -126,7 +126,7 @@ bool PPMWrite(PPMImage *image, const char *path) {
 
     // Prepare PPM image header and get header length for writing
     char header[128];
-    int header_length = sprintf(
+     size_t header_length = (size_t)sprintf(
         header,
         "P6\n"
         "%zd %zd\n"
@@ -188,4 +188,8 @@ void PPMFree(PPMImage *image) {
 
     // Set data for null for safety
     image->data = NULL;
+}
+
+PPMPixel* PPMGet(PPMImage *image, size_t row, size_t col) {
+    return &(image->data[row * image->width + col]);
 }
