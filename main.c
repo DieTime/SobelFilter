@@ -1,21 +1,30 @@
 #include <stdio.h>
-#include "include/ppm.h"
+
+#include "include/sobel.h"
 
 int main() {
-    PPMImage image;
+    // Creating PGM image structures
+    PGMImage source = PGMCreate();
+    PGMImage output = PGMCreate();
 
-    // Read PPM image to structure from file
-    if (PPMRead("../images/Aurora.ppm", &image) != 0) {
+    // Read PGM image to structure from file
+    if (PGMRead("../images/Aurora.pgm", &source) != 0) {
         return 1;
     }
 
-    // Write PPM image structure to file
-    if (PPMWrite(&image, "../images/Aurora.sobel.ppm") != 0) {
+    // Apply Sobel filter to source image
+    if (Sobel(&source, &output) != 0) {
         return 2;
     }
 
+    // Write filtered PGM image structure to file
+    if (PGMWrite(&output, "../images/Aurora.sobel.pgm") != 0) {
+        return 3;
+    }
+
     // Free allocated memory
-    PPMFree(&image);
+    PGMFree(&source);
+    PGMFree(&output);
 
     return 0;
 }

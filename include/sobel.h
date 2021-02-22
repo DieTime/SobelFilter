@@ -1,8 +1,8 @@
-//
-// Created by glazzkoff on 22.02.2021.
-//
+#ifndef SOBEL_FILTER_SOBEL_H
+#define SOBEL_FILTER_SOBEL_H
 
-#ifndef MAIN_C_SOBEL_H
-#define MAIN_C_SOBEL_H
+#include "pgm.h"
 
-#endif //MAIN_C_SOBEL_H
+bool Sobel(PGMImage *source, PGMImage* result);
+
+#endif //SOBEL_FILTER_SOBEL_H
