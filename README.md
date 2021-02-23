@@ -16,8 +16,8 @@ Multithread Sobel filter implementation on C language.
 git clone https://github.com/DieTime/SobelFilter.git
 cd SobelFilter/
 
-cmake -S . -B ./cmake-build 
-cd ./cmake-build && cmake --build .
+cmake -DCMAKE_BUILD_TYPE=Release -S . -B ./cmake-build
+cd ./cmake-build && cmake --build . --config Release
 
 ./sobel-filter -S <path/to/source.pgm> -O <path/to/output.pgm> -J <threads>
 ```
