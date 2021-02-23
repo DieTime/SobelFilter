@@ -8,7 +8,7 @@ int main() {
     PGMImage output = PGMCreate();
 
     // Read PGM image to structure from file
-    if (PGMRead("../images/Aurora.pgm", &source) != 0) {
+    if (PGMRead("../images/Aurora8x.pgm", &source) != 0) {
         return 1;
     }
 
@@ -18,7 +18,7 @@ int main() {
     }
 
     // Write filtered PGM image structure to file
-    if (PGMWrite(&output, "../images/Aurora.sobel.pgm") != 0) {
+    if (PGMWrite(&output, "../images/Aurora8x.sobel.pgm") != 0) {
         return 3;
     }
 
