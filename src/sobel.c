@@ -119,7 +119,7 @@ void* SobelApply(void *args) {
                 (*ImageGet(data->source, i + 1, j) * sobel_dx[1][2]) +
                 (*ImageGet(data->source, i - 1, j + 1) * sobel_dx[2][0]) +
                 (*ImageGet(data->source, i, j + 1) * sobel_dx[2][1]) +
-                (*ImageGet(data->source, i, j + 1) * sobel_dx[2][2]);
+                (*ImageGet(data->source, i + 1, j + 1) * sobel_dx[2][2]);
 
             uint8_t gray_dy = (uint8_t)
                 (*ImageGet(data->source, i - 1, j - 1) * sobel_dy[0][0]) +
@@ -130,7 +130,7 @@ void* SobelApply(void *args) {
                 (*ImageGet(data->source, i + 1, j) * sobel_dy[1][2]) +
                 (*ImageGet(data->source, i - 1, j + 1) * sobel_dy[2][0]) +
                 (*ImageGet(data->source, i, j + 1) * sobel_dy[2][1]) +
-                (*ImageGet(data->source, i, j + 1) * sobel_dy[2][2]);
+                (*ImageGet(data->source, i + 1, j + 1) * sobel_dy[2][2]);
 
             // Calculate and save pixel value
             uint8_t *pixel = ImageGet(data->result, i - 1, j - 1);
