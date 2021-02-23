@@ -1,4 +1,5 @@
 #include <stdio.h>
+
 #include "include/sobel.h"
 
 int main() {
@@ -7,14 +8,14 @@ int main() {
     PGMImage output = PGMCreate();
 
     // Read PGM image to structure from file
-    PGMRead("../images/Aurora8x.pgm", &source);
+    PGMRead("../images/Aurora.pgm", &source);
 
     // Apply Sobel filter to source image
     // and save result to new PGM image
     Sobel(&source, &output, 8);
 
     // Write filtered PGM image structure to file
-    PGMWrite(&output, "../images/Aurora8x.sobel.pgm");
+    PGMWrite(&output, "../images/Aurora.sobel.pgm");
 
     // Free allocated memory
     PGMFree(&source);
