@@ -26,7 +26,7 @@ typedef struct {
  *      .................
  *
  * @path Path to image
- * @return PGM structure
+ * @return 1 on error, 0 on success
  */
 bool PGMRead(const char *path, PGMImage *image);
 
@@ -36,7 +36,7 @@ bool PGMRead(const char *path, PGMImage *image);
  * @image PGM structure
  * @path Path for saving image
  *
- * @return Saving status
+ * @return 1 on error, 0 on success
  */
 bool PGMWrite(PGMImage *image, const char *path);
 
