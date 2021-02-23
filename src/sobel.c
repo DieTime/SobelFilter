@@ -100,7 +100,7 @@ void* SobelApply(void *args) {
     // Get data from arguments
     ThreadData *data = (ThreadData*)args;
 
-    DEBUG_LOG("\t[LOG] Thread #%lu created\n", data->thread_idx)
+    DEBUG_LOG("\t[LOG] Thread #%hhu created\n", data->thread_idx)
 
     // Sobel x and y matrix
     int8_t sobel_dx[3][3] = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
@@ -108,7 +108,7 @@ void* SobelApply(void *args) {
 
     // Calculate pixels in the desired range of rows
     for (size_t i = data->start_row; (i < data->end_row) && (i < data->source->height - 1); i++) {
-        DEBUG_LOG("\t[LOG] Thread #%lu started work on %lu image row\n", data->thread_idx, i)
+        DEBUG_LOG("\t[LOG] Thread #%hhu started work on %lu image row\n", data->thread_idx, i)
         for (size_t j = 1; j < data->source->width - 1; j++) {
             uint8_t gray_dx = (uint8_t)
                 (*ImageGet(data->source, i - 1, j - 1) * sobel_dx[0][0]) +
