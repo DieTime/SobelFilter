@@ -1,12 +1,18 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 #include "../include/sobel.h"
 
 #define MAX_OF(x, y) ((x) > (y)) ? (x) : (y)
 
 bool Sobel(PGMImage *source, PGMImage *result) {
+    struct timeval stop, start;
+
+    // Start clocking
+    gettimeofday(&start, NULL);
+
     // Check source image size
     if (source->width < 3 || source->height < 3) {
         fprintf(stderr, "[ERROR] Source image have too small size. Minimum size 3x3\n");
@@ -69,12 +75,16 @@ bool Sobel(PGMImage *source, PGMImage *result) {
         }
     }
 
+    // Stop clocking
+    gettimeofday(&stop, NULL);
+
     // Log info on success
     fprintf(
         stderr,
-        "[INFO] Successfully apply filter\n"
+        "[INFO] Successfully apply filter in %lu µs.\n"
         "       Image size: %zdx%zd\n"
         "       Chroma: %hhu\n",
+        (stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec,
         result->width, result->height, result->chroma
     );
 
