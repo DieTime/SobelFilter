@@ -77,6 +77,7 @@ bool PGMRead(const char *path, PGMImage *image) {
     size_t bytes_count = image->width * image->height;
 
     // Allocate memory for pixels
+    PGMFree(image);
     image->pixels = malloc(bytes_count);
     if (image->pixels == NULL) {
         printf( "\t[ERROR] Couldn't allocate image pixels\n");
