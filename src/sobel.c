@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <time.h>
 
 #include "../include/sobel.h"
 
@@ -15,7 +16,7 @@
 #define MAX_OF(x, y) ((x) > (y)) ? (x) : (y)
 
 bool Sobel(PGMImage *source, PGMImage *result, uint8_t threads) {
-    struct timeval stop, start;
+    struct timespec stop, start;
 
     // Log starting info
     printf( "\nStart applying Sobel filter on %hhu threads:\n", threads);
@@ -55,21 +56,24 @@ bool Sobel(PGMImage *source, PGMImage *result, uint8_t threads) {
 
     size_t rows_per_tread = result->height / threads;
 
+    // Generate arguments for current thread
+    for (uint8_t th = 0; th < threads; th++) {
+        args[th] = (ThreadData){
+                .source = source,
+                .result = result,
+                .start_row = 1 + th * rows_per_tread,
+                .end_row = (1 + (th + 1) * rows_per_tread) % (source->height),
+                .thread_idx = th + 1,
+        };
+    }
+
     // Start clocking
-    gettimeofday(&start, NULL);
+    clock_gettime(CLOCK_MONOTONIC, &start);
 
     for (uint8_t th = 0; th < threads; th++) {
-        // Generate arguments for current thread
-        args[th] = (ThreadData){
-            .source = source,
-            .result = result,
-            .start_row = 1 + th * rows_per_tread,
-            .end_row = 1 + (th + 1) * rows_per_tread,
-            .thread_idx = th + 1,
-        };
-
         // Create and run thread
         if (pthread_create(&(pthreads[th]), NULL, SobelApply, (void*)&args[th]) != 0) {
+            printf( "\t[ERROR] Couldn't create thread #%hhu\n", th);
             PGMFree(result);
             return 1;
         }
@@ -81,15 +85,16 @@ bool Sobel(PGMImage *source, PGMImage *result, uint8_t threads) {
     }
 
     // Stop clocking
-    gettimeofday(&stop, NULL);
+    clock_gettime(CLOCK_MONOTONIC, &stop);
 
     // Log info on success
     fprintf(
         stderr,
-        "\t[INFO] Successfully apply filter in %lu µs.\n"
+        "\t[INFO] Successfully apply filter in %f s.\n"
         "\t       Image size: %zdx%zd\n"
         "\t       Chroma: %hhu\n",
-        (stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec,
+        (double)(stop.tv_nsec - start.tv_nsec) / 1000000000.0 +
+        (double)(stop.tv_sec  - start.tv_sec),
         result->width, result->height, result->chroma
     );
 
@@ -107,10 +112,10 @@ void* SobelApply(void *args) {
     int8_t sobel_dy[3][3] = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
 
     // Calculate pixels in the desired range of rows
-    for (size_t i = data->start_row; (i < data->end_row) && (i < data->source->height - 1); i++) {
+    for (size_t i = data->start_row; i < data->end_row; i++) {
         DEBUG_LOG("\t[LOG] Thread #%hhu started work on %lu image row\n", data->thread_idx, i)
         for (size_t j = 1; j < data->source->width - 1; j++) {
-            uint8_t gray_dx = (uint8_t)
+            uint32_t gray_dx = (uint32_t)
                 (*ImageGet(data->source, i - 1, j - 1) * sobel_dx[0][0]) +
                 (*ImageGet(data->source, i, j - 1) * sobel_dx[0][1]) +
                 (*ImageGet(data->source, i + 1, j - 1) * sobel_dx[0][2]) +
@@ -121,7 +126,7 @@ void* SobelApply(void *args) {
                 (*ImageGet(data->source, i, j + 1) * sobel_dx[2][1]) +
                 (*ImageGet(data->source, i + 1, j + 1) * sobel_dx[2][2]);
 
-            uint8_t gray_dy = (uint8_t)
+            uint32_t gray_dy = (uint32_t)
                 (*ImageGet(data->source, i - 1, j - 1) * sobel_dy[0][0]) +
                 (*ImageGet(data->source, i, j - 1) * sobel_dy[0][1]) +
                 (*ImageGet(data->source, i + 1, j - 1) * sobel_dy[0][2]) +
@@ -141,7 +146,7 @@ void* SobelApply(void *args) {
         }
     }
 
-    DEBUG_LOG("\t[LOG] Thread #%lu has finished\n", data->thread_idx)
+    DEBUG_LOG("\t[LOG] Thread #%hhu has finished\n", data->thread_idx)
 
     // Terminate current thread
     pthread_exit(NULL);
