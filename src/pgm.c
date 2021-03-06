@@ -131,7 +131,7 @@ bool PGMWrite(PGMImage *image, const char *path) {
     );
 
     // Try open file for writing
-    int fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 644);
+    int fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
     if (fd == -1) {
         printf( "\t[ERROR] Couldn't open \"%s\" for writing\n", path);
         return 1;
