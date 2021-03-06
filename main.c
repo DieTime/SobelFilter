@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <ctype.h>
 #include <unistd.h>
 #include <stdlib.h>
 
@@ -7,8 +6,8 @@
 
 int main(int argc, char **argv) {
     // Arguments data
-    int src_flag = 0; char *src = "\0";
-    int out_flag = 0; char *out = "\0";
+    bool src_flag = 0; char *src = "\0";
+    bool out_flag = 0; char *out = "\0";
     int jobs = 1;
 
     // Current arguments token
@@ -67,7 +66,7 @@ int main(int argc, char **argv) {
 
     // Apply Sobel filter to source image
     // and save result to new PGM image
-    Sobel(&source, &output, jobs);
+    Sobel(&source, &output, (uint8_t)jobs);
 
     // Write filtered PGM image structure to file
     PGMWrite(&output, out);

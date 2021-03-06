@@ -2,7 +2,6 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/time.h>
 #include <time.h>
 
 #include "../include/sobel.h"
@@ -60,7 +59,7 @@ bool Sobel(PGMImage *source, PGMImage *result, uint8_t threads) {
             .result = result,
             .start_row = 1 + th * rows_per_tread,
             .end_row = (1 + (th + 1) * rows_per_tread) % (source->height),
-            .thread_idx = th + 1,
+            .thread_idx = (uint8_t)(th + 1),
         };
     }
 
