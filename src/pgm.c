@@ -162,7 +162,7 @@ bool PGMWrite(PGMImage *image, const char *path) {
 }
 
 PGMImage PGMCreate() {
-    return (PGMImage) {.pixels = NULL, .width = 0, .height = 0, .chroma = 0};
+    return (PGMImage) {.pixels = NULL, .width = 0, .height = 0, .chroma = 255};
 }
 
 void PGMFree(PGMImage *image) {

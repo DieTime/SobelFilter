@@ -13,8 +13,6 @@
     #define DEBUG_LOG(...)
 #endif
 
-#define MAX_OF(x, y) ((x) > (y)) ? (x) : (y)
-
 bool Sobel(PGMImage *source, PGMImage *result, uint8_t threads) {
     struct timespec stop, start;
 
@@ -39,7 +37,6 @@ bool Sobel(PGMImage *source, PGMImage *result, uint8_t threads) {
     // Setup result PGM structure
     result->width = source->width - 2;
     result->height = source->height - 2;
-    result->chroma = 0;
 
     // Calculate result bytes count
     size_t bytes_count = result->width * result->height;
@@ -59,11 +56,11 @@ bool Sobel(PGMImage *source, PGMImage *result, uint8_t threads) {
     // Generate arguments for current thread
     for (uint8_t th = 0; th < threads; th++) {
         args[th] = (ThreadData){
-                .source = source,
-                .result = result,
-                .start_row = 1 + th * rows_per_tread,
-                .end_row = (1 + (th + 1) * rows_per_tread) % (source->height),
-                .thread_idx = th + 1,
+            .source = source,
+            .result = result,
+            .start_row = 1 + th * rows_per_tread,
+            .end_row = (1 + (th + 1) * rows_per_tread) % (source->height),
+            .thread_idx = th + 1,
         };
     }
 
@@ -81,7 +78,11 @@ bool Sobel(PGMImage *source, PGMImage *result, uint8_t threads) {
 
     // Wait all threads
     for (uint8_t th = 0; th < threads; th++) {
-        pthread_join(pthreads[th], NULL);
+        if (pthread_join(pthreads[th], NULL) != 0) {
+            printf( "\t[ERROR] Couldn't join thread #%hhu\n", th);
+            PGMFree(result);
+            return 1;
+        }
     }
 
     // Stop clocking
@@ -140,9 +141,6 @@ void* SobelApply(void *args) {
             // Calculate and save pixel value
             uint8_t *pixel = ImageGet(data->result, i - 1, j - 1);
             *pixel = (uint8_t) ceil(sqrt(gray_dx * gray_dx + gray_dy * gray_dy));
-
-            // Update chroma
-            data->result->chroma = MAX_OF(data->result->chroma, *pixel);
         }
     }
 
