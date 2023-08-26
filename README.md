@@ -1,20 +1,18 @@
-# Sobel filter
-
 Multithread Sobel filter implementation on C language.
 
-### About:
+## About
 1. Working only with `PGM - portable graymap format` image
 2. Support multithreading using `-J` flag
 
-### Flags:
+## Flags
 - `-S` Path to source PGM image `required!`
 - `-O` Path to output PGM image `required!`
 - `-J` Threads count `optional`
 
-### Usage:
+## Usage
 ```bash
-git clone https://github.com/DieTime/SobelFilter.git
-cd SobelFilter/
+git clone https://github.com/DieTime/sobel-filter.git
+cd sobel-filter/
 
 cmake -DCMAKE_BUILD_TYPE=Release -S . -B ./cmake-build
 cd ./cmake-build && cmake --build . --config Release
